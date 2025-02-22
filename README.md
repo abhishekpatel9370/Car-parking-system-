@@ -2,61 +2,61 @@ Car Parking System
 
 Overview
 
-The Car Parking System is a Verilog-based implementation of an automated parking control system. It uses sensors to detect vehicle entry and exit, verifies passwords, and controls LED indicators and a 7-segment display to signal parking status.
+The Car Parking System is a Verilog implementation of an automated parking control system. It detects vehicle entry and exit with sensors, checks passwords, and controls LED indicators and a 7-segment display to indicate parking status.
 
 Features
 
-Detects vehicle entry and exit using sensors.
+Detects vehicle entry and exit via sensors.
 
 Verifies user password for authentication.
 
 Controls LED indicators:
 
-Green LED indicates successful authentication.
+Green LED shows successful authentication.
 
-Red LED indicates incorrect authentication.
+Red LED shows incorrect authentication.
 
 Displays messages on a 7-segment display:
 
-"GO" when access is granted.
+"GO" when access is given.
 
-"EE" when an error occurs.
+"EE" when an error is detected.
 
-Implements a finite state machine (FSM) to manage parking logic.
+Uses a finite state machine (FSM) to handle parking logic.
 
 State Machine
 
-The system operates in the following states:
+System runs in the following states:
 
-IDLE: Waiting for a vehicle entry or exit event.
+IDLE: Awaiting vehicle entry or exit event.
 
-WAIT_PASSWORD: Waiting for password input.
+WAIT_PASSWORD: Awaiting password entry.
 
-WRONG_PASSWORD: Denies access for incorrect password.
+WRONG_PASSWORD: Refuses access for wrong password.
 
-RIGHT_PASSWORD: Grants access for correct password.
+RIGHT_PASSWORD: Allows access for right password.
 
-STOP: Resets the system when the car exits.
+STOP: Resets the system when car exits.
 
 Hardware Requirements
 
 FPGA board (e.g., Xilinx Artix-7)
 
-Sensors for entry and exit detection
+Entry and exit detection sensors
 
 7-segment display
 
-LEDs for status indication
+Status indication LEDs
 
 Module Interface
 
 Inputs:
 
-sensor1_entry, sensor2_entry: Detect vehicle entry.
+sensor1_entry, sensor2_entry: Identify vehicle entry.
 
-sensor1_exit, sensor2_exit: Detect vehicle exit.
+sensor1_exit, sensor2_exit: Register vehicle exit.
 
-password1, password2: 16-bit passwords for authentication.
+password1, password2: 16-bit passwords.
 
 clk: System clock signal.
 
@@ -64,51 +64,42 @@ rst: Reset signal.
 
 Outputs:
 
-Greenled1, Greenled2: Indicate successful authentication.
+Greenled1, Greenled2: Illuminate when authentication succeeds.
 
-Redled1, Redled2: Indicate denied access.
+Redled1, Redled2: Illuminate when access is denied.
 
-HEX_1, HEX_2, HEX_3, HEX_4: Display system status on a 7-segment display.
+HEX_1, HEX_2, HEX_3, HEX_4: Present system status using a 7-segment display.
 
 How It Works
 
-When a vehicle approaches, an entry sensor is triggered.
+On vehicle approach, an entry sensor is activated.
 
-The system prompts for a password.
+The system asks for a password.
 
-If the password is correct, the green LED lights up and "GO" is displayed.
+When a correct password is entered, the green LED flashes and "GO" is lit.
 
-If the password is incorrect, the red LED lights up and "EE" is displayed.
+If the password is wrong, the red LED glows and "EE" is shown.
 
-When the vehicle exits, the system resets to the IDLE state.
+When the vehicle departs, the system returns to the IDLE state.
 
 Installation & Usage
 
-Load the Verilog code into an FPGA development environment (e.g., Vivado).
+Load the Verilog code into an FPGA development tool (e.g., Vivado).
 
-Synthesize and implement the design.
+Synthesize and map the design.
 
-Program the FPGA and connect the necessary hardware.
+Program the FPGA and set up the required hardware.
 
 Test the system by simulating vehicle entry and exit with sensor inputs.
 
 Future Improvements
 
-Integrating an LCD for better user interface.
+Adding an LCD for improved user interface.
 
-Implementing RFID-based authentication.
+Using RFID-based authentication.
 
 Adding a parking space availability counter.
 
 License
 
-This project is open-source under the MIT License.
-
-
-Acknowledgments
-
-Inspired by real-world automated parking systems.
-
-Developed as a Verilog practice project.
-
-
+This project is open-source under the MIT License
