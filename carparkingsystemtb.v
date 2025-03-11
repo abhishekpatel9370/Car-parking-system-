@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 02/04/2025 10:09:50 PM
+// Create Date: 03/08/2025 10:53:45 PM
 // Design Name: 
-// Module Name: carparkingsystemtb
+// Module Name: carparking_tb
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -18,7 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
 
 module carparking_tb;
 
@@ -42,8 +41,8 @@ module carparking_tb;
     wire [6:0] HEX_3;
     wire [6:0] HEX_4;
 
-    // Instantiate the Unit Under Test (UUT)
-    carparking uut (
+    // Instantiate the carparking module
+    car_parking uut (
         .sensor1_entry(sensor1_entry),
         .sensor1_exit(sensor1_exit),
         .sensor2_entry(sensor2_entry),
@@ -62,78 +61,67 @@ module carparking_tb;
         .HEX_4(HEX_4)
     );
 
-    // Clock Generation
-    always begin
-        #5 clk = ~clk; // 100 MHz clock
-    end
+    // Clock generation
+    always #5 clk = ~clk;  // 100 MHz clock (10 ns period)
 
-    // Initial block for stimulus
+    // Test sequence
     initial begin
-        // Initialize Inputs
+        // Initialize inputs
         clk = 0;
-        rst = 0;
-        sensor1_entry = 0;
+        rst = 1;
+        sensor1_entry = 1;
         sensor1_exit = 0;
         sensor2_entry = 0;
         sensor2_exit = 0;
-        password1 = 16'h0000;
+        password1 = 16'h1234;
         password2 = 16'h0000;
 
-        // Reset the system
-        rst = 1;
-        #10;
+        // Apply reset for 2 clock cycles
+        #20;
         rst = 0;
-        #10;
 
-        // Test case 1: Sensor 1 entry with wrong password
+        // Test case 1: Correct password, vehicle at sensor 1
+        @(posedge clk);
         sensor1_entry = 1;
-        password1 = 16'h0000; // Wrong password
-        #20;
+        sensor1_exit = 0;
+        password1 = 16'h1234;
+        #50; // Wait and observe
+
+        // Test case 2: Incorrect password, vehicle at sensor 1
+        @(posedge clk);
+        password1 = 16'h1111; // Wrong password
+        #50;
+
+        // Test case 3: Correct password, vehicle at sensor 2
+        @(posedge clk);
         sensor1_entry = 0;
-
-        // Test case 2: Sensor 1 entry with correct password
-        sensor1_entry = 1;
-        password1 = 16'h1234; // Correct password
-        #20;
-        sensor1_entry = 0;
-
-        // Test case 3: Sensor 1 exit
-        sensor1_exit = 1;
-        #20;
-        sensor1_exit = 1;
-
-        // Test case 4: Sensor 2 entry with wrong password
         sensor2_entry = 1;
-        password2 = 16'h1234; // Wrong password
-        #20;
-        sensor2_entry = 0;
+        password2 = 16'h1234;
+        #50;
 
-        // Test case 5: Sensor 2 entry with correct password
+        // Test case 4: Vehicle exits from sensor 1
+        @(posedge clk)
         sensor2_entry = 0;
-        password2 = 16'h1234; // Correct password
-        #20;
-        sensor2_entry = 0;
+        sensor1_exit = 1;
+        password1 = 16'h1234;
+        #50;
 
-        // Test case 6: Sensor 2 exit
+        // Test case 5: Both sensors active simultaneously
+        @(posedge clk);
+        sensor1_entry = 1;
         sensor2_exit = 1;
-        #20;
-        sensor2_exit = 1;
-
-        // Test case 7: Reset the system
-        rst = 1;
-        #10;
-        rst = 0;
-        #10;
+        password1 = 16'h1234;
+        password2 = 16'h1234;
+        #50;
 
         // End simulation
-        # 500 $finish;
+        $finish;
     end
 
-    // Monitor outputs for debugging
+    // Monitor outputs
     initial begin
-        $monitor("At time %t, Greenled1 = %b, Redled1 = %b, Greenled2 = %b, Redled2 = %b, HEX_1 = %b, HEX_2 = %b, HEX_3 = %b, HEX_4 = %b", 
-                 $time, Greenled1, Redled1, Greenled2, Redled2, HEX_1, HEX_2, HEX_3, HEX_4);
+        $monitor("Time: %t | sensor1_entry: %b | sensor1_exit: %b | sensor2_entry: %b | sensor2_exit: %b | password1: %h | password2: %h | Greenled1: %b | Greenled2: %b | HEX_1: %b | HEX_2: %b | HEX_3: %b | HEX_4: %b",
+                $time, sensor1_entry, sensor1_exit, sensor2_entry, sensor2_exit, password1, password2, Greenled1, Greenled2, HEX_1, HEX_2, HEX_3, HEX_4);
     end
-
 endmodule
 
